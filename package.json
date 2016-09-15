@@ -1,0 +1,30 @@
+{
+  "name": "builder",
+  "version": "0.0.0",
+  "description": "Build static local pages",
+  "main": "gulp.js",
+  "scripts": {
+    "test": "gulp.js test",
+    "build": "dot-cli -t index.dot -j data/*.json -o built/%j/%t.xhtml"
+  },
+  "author": "Fabio Beltramini",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "dot-cli": "^0.2.0",
+    "uncss": "^0.13.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "body-parser": "^1.15.2",
+    "console.table": "^0.7.0",
+    "dot": "^1.0.3",
+    "express": "^4.14.0",
+    "highland": "^2.8.1",
+    "jsonschema": "^1.1.0",
+    "minimist": "^1.2.0",
+    "promisify-node": "^0.4.0",
+    "request": "^2.72.0",
+    "request-promise": "^3.0.0",
+    "sharp": "^0.15.0"
+  }
+}

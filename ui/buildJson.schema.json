@@ -1,0 +1,35 @@
+{
+		"title":"Build Spec",
+		"type":"object",
+		"properties":{
+				"slug":{
+						"title":"Slug",
+						"type":"string",
+						"pattern":"^[-._a-zA-Z0-9]{1,25}$"
+					},
+				"ll":{
+						"title":"Lat,Long",
+						"type":"string",
+						"pattern":"^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$"
+					},
+				"coverUrl":{
+						"title":"Cover Image URL",
+						"type":"string",
+						"pattern":"^$|^https?://[^/]+/.+\\.jpe?g"
+					},
+				"title":{
+							"title":"Title/h1 (optional)",
+							"type":"string"
+						},
+				"skipImages":{
+							"title":"Skip images? (fast build HTML)",
+							"type":"boolean",
+							"format": "checkbox"
+					},
+			"rebuildTemplate":{
+						"title":"Rebuild template?",
+						"type":"boolean",
+						"format": "checkbox"
+				}
+			}
+	}

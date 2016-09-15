@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head><title>Build a place page</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
+	<link rel='stylesheet' href='//cdn.jsdelivr.net/foundation/5.0.2/css/foundation.min.css'>
+	<!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
+	<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+	<script src="/jsoneditor.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+	<script>
+		function acc(el){
+			$(el.target+">div").hide();
+			$(el.target+">"+el.getAttribute('href')).show();
+			return false;
+		}
+	</script>
+</head>
+<body>
+	<div id="notification" style="position:fixed;display:none;background-color:#ED9;color:#440;top:20px;left:25vw;right:25vw;padding:2em;"></div>
+	<div id="accordion">
+		<a href="#built" target="#accordion" onclick="acc(this)">
+			<h2>Built</h2>
+		</a>
+		<div id="built" style="display:none">
+			todo...<BR />
+			<table id="built-table">
+			<thead><tr><th>Date</th><th>Slug</th><th>Shortcode</th><th>Actions</th></tr></thead>
+			<tbody id="build-tbody"></tody>
+			</table>
+		</div>
+		<a href="#build" target="#accordion" onclick="acc(this)">
+			<h2>Build</h2>
+		</a>
+		<div id="build">
+			<form id="form">
+				<div id="editor"></div>
+				<div id='indicator'></div>
+				<input type="submit" value="Build" />
+			</form>
+		</div>
+	</div>
+</body>
+<script>
+	JSONEditor.defaults.theme = 'foundation5';
+	JSONEditor.defaults.iconlib = 'fontawesome4';
+
+	var pSchema=$.getJSON("buildJson.schema.json")
+	pSchema.then((schema)=>{
+			var editor=new JSONEditor($("#editor")[0],{
+					schema:schema
+				});
+			$('#form').on("submit",function(evt){
+					evt.preventDefault();
+					$('#indicator').hide();
+					var err=editor.validate();
+					if(err.length){
+							$("#indicator").text(JSON.stringify(err)).show();
+							return;
+						}
+					$.post({
+							url:"/build",
+							data:JSON.stringify(editor.getValue()),
+							contentType: "application/json"
+						})
+					.then((res)=>$("#notification").text(res).show().delay(5000).fadeOut(2000))
+				})
+		})
+
+
+</script>
+</html>

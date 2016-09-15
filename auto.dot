@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>{{!it.post.title||it.foursquare[0].headerLocation}} Local Info</title>
+	<link rel="shortcut icon" type="image/png" href="/resources/favicons/o-blue-96x96.png" />
+	<meta name="description" content="The best food, shops, and activities in the area." />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<script>function q(x){q.q.push(x);}q.q=[];</script>
+	<link rel="stylesheet" href="/resources/flickity.css" media="screen" />
+	<style>
+	html,body{
+			margin:0;
+			width:100%;
+			background-color: #F8F8F8;
+			font-family: sans-serif;
+		}
+	.cover{
+			position:fixed;
+			height:25vh;
+			overflow:hidden;
+			z-index:99;
+			background-color: #66a;
+			box-shadow: 0 2px 2px black;
+			transition: all 0.4s;
+		}
+	.cover>h1 {
+			position:absolute;
+			z-index:3;
+			font-size:1.25em;
+			text-align:center;
+			text-shadow:1px 2px 2px #222;
+		}
+	.cover>h1>a{color:white}
+	.cover>img{
+			position:absolute;
+			z-index:1;
+		}
+	.cover>.shade{
+			position:absolute;
+			z-index:2;
+			background-color: rgba(32,32,32,0.25);
+			background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.25) 50%,rgba(0,0,0,0.25) 100%);
+		}
+	.cover.shrink{
+			height:1.5em;
+		}
+	.cover,.cover>img,.cover>.shade{
+			top:0; left:0; right:0;
+			height:25vh; min-width:100%;
+		}
+	.cover.shrink>h1{
+			font-size:1em;
+			margin:0.25em;
+			text-align:left;
+		}
+	.page{
+			margin-top:26vh;
+		}
+	h2{
+				font-size:1.2em;
+				margin-bottom:0;
+				border-bottom:1px solid #333;
+			}
+	.gallery-cell,.gallery-cell>img{
+			width:23vw;
+			height:23vw;
+		}
+	.gallery-cell {
+			display:inline-block;
+			overflow: hidden;
+			text-align: center;
+			vertical-align: middle;
+			margin:2vw;
+			border-radius:2vw;
+			background-color:#D0D0D0;
+			position: relative; top:0; left:0
+		}
+	.gallery-cell:first-child{
+			margin-left:2em;
+		}
+	.gallery-cell>img{
+			position:absolute; top: 0; left: 0; z-index:2;
+		}
+	.gallery-cell>div{
+			position:absolute; top: 0; left: 0; right:0; z-index:3;
+			font-size:1.25em;
+			text-align:center;
+			text-shadow:2px 2px 2px #111;
+			color:white;
+		}
+		</style>
+</head>
+<body>
+	<div class="cover">
+		<h1><a href="#" data-target="#main" onclick="q(this); return false;">{{!it.post.title||it.foursquare[0].headerLocation}}</a></h1>
+		<img id="ci" src="/places/{{!it.post.slug}}/img/cover.jpg" />
+		<div class="shade"></div>
+	</div>
+	<div class="page" id="main-page" >
+		{{~it.foursquare :section:s}}
+		<div class="strip">
+			<h2>{{!section.section}}</h2>
+			<div class="gallery js-flickity" data-flickity-options='{ "contain": true, "pageDots":false, "prevNextButtons":false }'>
+				{{~section.groups[0].items :item:i}}
+					<a href="#fs={{!item.venue.id}}"
+						onclick="q(this); return false"
+						data-target="#details"
+						data-foursquareId="{{!item.venue.id}}"
+						data-track="{{!section.section+'/'+i+'/'+item.venue.name}}"
+						>
+						<div class="gallery-cell">
+							<div>{{!item.venue.name}}</div>
+							<img src="{{!item.venue.photos.groups[0].items[0].localUrl}}"
+								/>
+						</div>
+					</a>
+				{{~}}
+			</div>
+		</div>
+		{{~}}
+	</div><!-- /page -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-78451165-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+	<script src="/resources/flickity.pkgd.min.js"></script>
+	</script>
+	<script>
+		var coverBreakPoint=80;
+		$(document).ready(slideCover);
+		$(window).on('scroll',slideCover);
+		function slideCover(e){
+				var y = window.pageYOffset || document.documentElement.scrollTop;
+				if (y > coverBreakPoint) {
+						$(".cover").addClass("shrink");
+					} else {
+						$(".cover").removeClass("shrink");
+					}
+			}
+	</script>
+	<script>
+		var embed={{=JSON.stringify(it.embed)}}
+	</script>
+	<div class="page" id="details-page" style="display:none">
+		<style scoped="scoped">
+			#details>div{
+				padding: 1em 2em;
+				border:0 solid #666;
+				border-width:0 0 1px 0 ;
+				color:#666;
+				background: linear-gradient(to bottom, rgba(226,226,226,1) 0%,rgba(219,219,219,1) 50%,rgba(209,209,209,1) 51%,rgba(254,254,254,1) 100%);
+			}
+			#details a{text-decoration: none; color:#66A;}
+		</style>
+		<div id="details">
+		</div>
+		<script type="text/dot-template" id="details-template">
+			{{=it.detailsTemplate}}
+		</script>
+	</div>
+
+	<script>/* Laura Doktorova https://github.com/olado/doT */
+(function(){function p(b,a,d){return("string"===typeof a?a:a.toString()).replace(b.define||h,function(a,c,e,g){0===c.indexOf("def.")&&(c=c.substring(4));c in d||(":"===e?(b.defineParams&&g.replace(b.defineParams,function(a,b,l){d[c]={arg:b,text:l}}),c in d||(d[c]=g)):(new Function("def","def['"+c+"']="+g))(d));return""}).replace(b.use||h,function(a,c){b.useParams&&(c=c.replace(b.useParams,function(a,b,c,l){if(d[c]&&d[c].arg&&l)return a=(c+":"+l).replace(/'|\\/g,"_"),d.__exp=d.__exp||{},d.__exp[a]=
+d[c].text.replace(new RegExp("(^|[^\\w$])"+d[c].arg+"([^\\w$])","g"),"$1"+l+"$2"),b+"def.__exp['"+a+"']"}));var e=(new Function("def","return "+c))(d);return e?p(b,e,d):e})}function k(b){return b.replace(/\\('|\\)/g,"$1").replace(/[\r\t\n]/g," ")}var f={version:"1.0.3",templateSettings:{evaluate:/\{\{([\s\S]+?(\}?)+)\}\}/g,interpolate:/\{\{=([\s\S]+?)\}\}/g,encode:/\{\{!([\s\S]+?)\}\}/g,use:/\{\{#([\s\S]+?)\}\}/g,useParams:/(^|[^\w$])def(?:\.|\[[\'\"])([\w$\.]+)(?:[\'\"]\])?\s*\:\s*([\w$\.]+|\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})/g,
+define:/\{\{##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,defineParams:/^\s*([\w$]+):([\s\S]+)/,conditional:/\{\{\?(\?)?\s*([\s\S]*?)\s*\}\}/g,iterate:/\{\{~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,varname:"it",strip:!0,append:!0,selfcontained:!1,doNotSkipEncoded:!1},template:void 0,compile:void 0},m;f.encodeHTMLSource=function(b){var a={"&":"&#38;","<":"&#60;",">":"&#62;",'"':"&#34;","'":"&#39;","/":"&#47;"},d=b?/[&<>"'\/]/g:/&(?!#?\w+;)|<|>|"|'|\//g;return function(b){return b?
+b.toString().replace(d,function(b){return a[b]||b}):""}};m=function(){return this||(0,eval)("this")}();"undefined"!==typeof module&&module.exports?module.exports=f:"function"===typeof define&&define.amd?define(function(){return f}):m.doT=f;var r={start:"'+(",end:")+'",startencode:"'+encodeHTML("},s={start:"';out+=(",end:");out+='",startencode:"';out+=encodeHTML("},h=/$^/;f.template=function(b,a,d){a=a||f.templateSettings;var n=a.append?r:s,c,e=0,g;b=a.use||a.define?p(a,b,d||{}):b;b=("var out='"+(a.strip?
+b.replace(/(^|\r|\n)\t* +| +\t*(\r|\n|$)/g," ").replace(/\r|\n|\t|\/\*[\s\S]*?\*\//g,""):b).replace(/'|\\/g,"\\$&").replace(a.interpolate||h,function(b,a){return n.start+k(a)+n.end}).replace(a.encode||h,function(b,a){c=!0;return n.startencode+k(a)+n.end}).replace(a.conditional||h,function(b,a,c){return a?c?"';}else if("+k(c)+"){out+='":"';}else{out+='":c?"';if("+k(c)+"){out+='":"';}out+='"}).replace(a.iterate||h,function(b,a,c,d){if(!a)return"';} } out+='";e+=1;g=d||"i"+e;a=k(a);return"';var arr"+
+e+"="+a+";if(arr"+e+"){var "+c+","+g+"=-1,l"+e+"=arr"+e+".length-1;while("+g+"<l"+e+"){"+c+"=arr"+e+"["+g+"+=1];out+='"}).replace(a.evaluate||h,function(a,b){return"';"+k(b)+"out+='"})+"';return out;").replace(/\n/g,"\\n").replace(/\t/g,"\\t").replace(/\r/g,"\\r").replace(/(\s|;|\}|^|\{)out\+='';/g,"$1").replace(/\+''/g,"");c&&(a.selfcontained||!m||m._encodeHTML||(m._encodeHTML=f.encodeHTMLSource(a.doNotSkipEncoded)),b="var encodeHTML = typeof _encodeHTML !== 'undefined' ? _encodeHTML : ("+f.encodeHTMLSource.toString()+
+"("+(a.doNotSkipEncoded||"")+"));"+b);try{return new Function(a.varname,b)}catch(q){throw"undefined"!==typeof console&&console.log("Could not create a template function: "+b),q;}};f.compile=function(b,a){return f.template(b,null,a)}})();
+	</script>
+	<script>
+	detailsTemplate=doT.template($("#details-template").text())
+	function go(x){
+			var d=x.dataset,t=d.target,h=(x.getAttribute("href")||"").split("=");
+			d.track && ga('send','pageview',document.location.path+"#"+d.track);
+			if(t){
+					if(h.length>1){
+						$(t).html(detailsTemplate(embed[h[0]][h[1]]))
+							embed[h[0]][h[1]].img&&($("#ci")[0].src=embed[h[0]][h[1]].img)
+						}else{
+							$("#ci")[0].src="/places/{{!it.post.slug}}/img/cover.jpg"
+						}
+					$(".page").hide();
+					$(t+"-page").show();
+				}
+		}
+	$(document).ready(function(){
+			q.q.forEach(go);
+			q=go;
+		})
+	</script>
+	<style scoped="scoped">
+		#footer{
+				background-color: #333;
+				color:#EEE;
+				text-align: center;
+			}
+		#footer>a{
+				color:#EEE;
+				text-decoration:none;
+				margin:0.5em 1em;
+			}
+	</style>
+	<div id="footer">
+		<a href="http://www.lodestoneapps.com/">
+			About
+		</a>
+		|
+		<a href="http://www.lodestoneapps.com/privacy-policy">
+			Privacy
+		</a>
+		|
+		<a href="http://www.lodestoneapps.com/contact-us">
+			Contact us
+		</a>
+	</div>
+</body>
+</html>
